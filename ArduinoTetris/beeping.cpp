@@ -24,7 +24,7 @@
 
 #include <Arduino.h>
 
-#define SPEAKER 3
+#define SPEAKER 5
 
 #define NOTE_B2	123
 #define NOTE_C3	131

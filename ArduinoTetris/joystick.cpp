@@ -26,12 +26,12 @@
 
 // analog pins
 
-#define XPIN        0
-#define YPIN        1
+#define XPIN        14
+#define YPIN        15
 
 // digital pin
 
-#define FIREPIN     2
+#define FIREPIN     16
 
 // joystick center for both axis
 
@@ -55,12 +55,12 @@ class Joystick
 
     static int getX()
     {
-      return getPosition(XPIN) * -1;
+      return getPosition(XPIN) * 1;
     }
 
     static int getY()
     {
-      return getPosition(YPIN) * -1;
+      return getPosition(YPIN) * 1;
     }
 
     static boolean fire()
@@ -98,6 +98,5 @@ class Joystick
       return n / 128;
     }
 };
-
 #endif
 

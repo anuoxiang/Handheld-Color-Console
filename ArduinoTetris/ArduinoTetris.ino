@@ -1,6 +1,6 @@
 /*
     Arduino Tetris
-    Copyright (C) 2015  João André Esteves Vilaça
+    Copyright (C) 2015  Joï¿½o Andrï¿½ Esteves Vilaï¿½a
 
     https://github.com/vilaca/Handheld-Color-Console
 
@@ -18,26 +18,31 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
-
-#include "TFTv2_extended.h"
 #include <SPI.h>
+#include "Adafruit_GFX.h"
+#include "Adafruit_ILI9341.h"
+
+
+#define TFT_DC 8
+#define TFT_CS 9
+Adafruit_ILI9341 Tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+#define LCD 10
+
 
 #include "joystick.cpp"
 #include "beeping.cpp"
 #include "tetris.cpp"
 #include "sequencer.cpp"
-
+Tetris t;
 void setup() {
-
+  pinMode(LCD, OUTPUT);
+  digitalWrite(LCD, HIGH);
+  Tft.begin();
+  Tft.setRotation(3);
+  
   Sequencer::init();
-
-  TFT_BL_ON;      // turn on the background light
-
-  Tft.init();  // init TFT library
-
-  // play turnon sound	
+  // play turnon sound
   Beeping::turnOn();
-
   // initialize joystick
   Joystick::init();
 }
@@ -60,7 +65,7 @@ void loop() {
   Sequencer::stop();
 
   // load game
-  Tetris t;
+
   t.run();
 
   // game ended
@@ -69,18 +74,21 @@ void loop() {
 
 void drawPreGameScreen()
 {
-  Tft.fillScreen(WHITE);
-  Tft.drawCenteredString("Tetris", 40, 8, BLUE);
-  Tft.drawCenteredString("Click to play", 110, 2, BLACK);
-  Tft.drawCenteredString("http://vilaca.eu", 220, 2, PURPLE);
+
+  t._fillScreen(BLACK);
+  t._drawCenteredString("Tetris", 40, 8, BLUE);
+  t._drawCenteredString("Click to play", 110, 2, BLACK);
+  t._drawCenteredString("http://vilaca.eu", 220, 2, PURPLE);
+
 }
 
 
 void gameOver()
 {
-  Tft.fillRectangle(32, 84, 256, 52, BLACK);
-  Tft.drawString("Game Over", 48, 94, 4, 0x3ffff);
-  Tft.drawRectangle(32, 84, 256, 52, RED);
+
+  t._fillRectangle(32, 84, 256, 52, BLACK);
+  t._drawString("Game Over", 48, 94, 4, 0x3ffff);
+  t._drawRectangle(32, 84, 256, 52, RED);
 
   Beeping::beep(600, 200);
   delay(300);
@@ -89,11 +97,11 @@ void gameOver()
   Beeping::beep(200, 600);
   delay(1500);
   Joystick::waitForClick();
+
 }
 
 
 ISR(TIMER1_COMPA_vect) {
-
   // sequencer plays tetris theme
   Sequencer::play();
 }
